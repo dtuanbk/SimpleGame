@@ -216,6 +216,7 @@ public class MainActivity extends SimpleBaseGameActivity implements
 						Bundle bundle=new Bundle();
 						bundle.putInt("YourScore", a);
 						System.out.println(""+a);
+						intent.putExtras(bundle);
 						startActivity(intent);
 					}
 				});

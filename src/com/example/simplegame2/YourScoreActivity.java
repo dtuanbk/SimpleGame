@@ -14,7 +14,10 @@ import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.view.KeyEvent;
 
 public class YourScoreActivity extends SimpleBaseGameActivity{
 	private int W = 240;
@@ -38,10 +41,8 @@ public class YourScoreActivity extends SimpleBaseGameActivity{
 	@Override
 	public synchronized void onResumeGame() {
 		// TODO Auto-generated method stub
-		Bundle bundle=new Bundle();
+		System.out.println("onResumeGame");
 		
-		score=bundle.getInt("YourScore");
-		System.out.println(""+score);
 		super.onResumeGame();
 	}
 
@@ -62,19 +63,76 @@ public class YourScoreActivity extends SimpleBaseGameActivity{
 				this.getTextureManager(), W, H);
 		mFont = FontFactory.createFromAsset(this.getFontManager(),
 				fontITexture, this.getAssets(), "VNI-Disney Normal.TTF",
-				TEXT_SIZE, true, android.graphics.Color.GREEN);
+				TEXT_SIZE, true, android.graphics.Color.WHITE);
 		this.mFont.load();
 	}
 
 	@Override
 	protected Scene onCreateScene() {
+		Intent i=getIntent();
+		Bundle bundle=i.getExtras();
+		
+		score=bundle.getInt("YourScore");
+		System.out.println("YourScoreYourScore:"+score);
+		
+		System.out.println("onCreateScene");
 		// TODO Auto-generated method stub
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 		this.mScene=new Scene();
-		float centerY=W/2-TEXT_SIZE/2;
-		final Text mYourScore=new Text(50, centerY, mFont, "Your Score:"+score, this.getVertexBufferObjectManager());
+		float centerY=H/2-TEXT_SIZE/2;
+		final Text mYourScore=new Text(40, centerY, mFont, "Your Score:"+score, this.getVertexBufferObjectManager());
 		this.mScene.attachChild(mYourScore);
 		return this.mScene;
 	}
+
+	@Override
+	public boolean isGamePaused() {
+		// TODO Auto-generated method stub
+		
+		return super.isGamePaused();
+	}
+	@Override
+	public boolean onKeyDown(final int pKeyCode, final KeyEvent pEvent) {
+		if (pKeyCode == KeyEvent.KEYCODE_BACK
+				&& pEvent.getAction() == KeyEvent.ACTION_DOWN) {
+			System.out.println("KEYCODE_BACK");
+			finish();
+
+			return true;
+		} else {
+			return super.onKeyDown(pKeyCode, pEvent);
+		}
+	}
+
+	@Override
+	public synchronized void onPauseGame() {
+		// TODO Auto-generated method stub
+		System.out.println("onPauseGame");
+		finish();
+		super.onPauseGame();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		System.out.println("onBackPressed");
+		super.onBackPressed();
+	}
+
+	@Override
+	public boolean onKeyUp( int keyCode, KeyEvent event )
+	{
+		System.out.println("onKeyUp");
+	    if( keyCode == KeyEvent.KEYCODE_BACK )
+	    {
+	    	
+	    	finish();
+	        return true;
+	    }
+	    return super.onKeyUp( keyCode, event );
+	}
+	
+	
+	
 	
 }
