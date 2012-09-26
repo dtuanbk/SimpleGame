@@ -38,12 +38,14 @@ import android.view.Menu;
 
 public class MainActivity extends SimpleBaseGameActivity implements
 		IOnMenuItemClickListener {
-	private int W = 240;
-	private int H = 320;
+	private int W = 480;
+	private int H = 800;
 
 	private Scene mScene;
 
 	private MenuScene mMenuScene;
+	
+	private MenuScene mStartScene;
 
 	private Camera mCamera;
 
@@ -73,6 +75,8 @@ public class MainActivity extends SimpleBaseGameActivity implements
 
 	// Tao menu Item
 	private static final int MENU_PAUSE = 0;
+	private static final int MENU_START = 1;
+	private static final int MENU_QUIT = 2;
 
 	// Xac dinh khi diem duoc thay doi
 	private boolean isChange = false;
@@ -89,10 +93,20 @@ public class MainActivity extends SimpleBaseGameActivity implements
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
-
 	
+	
+	@Override
+	public synchronized void onResumeGame() {
+		// TODO Auto-generated method stub
+		System.out.println("onResumeGame");
+		startPause=SystemClock.elapsedRealtime();
+		this.mScene.setChildScene(this.mStartScene, false, true, true);
+		super.onResumeGame();
+	}
+
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
+		System.out.println("onCreateEngineOptions");
 		mCamera = new Camera(0, 0, W, H);
 
 		return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED,
@@ -102,6 +116,8 @@ public class MainActivity extends SimpleBaseGameActivity implements
 	@Override
 	protected void onCreateResources() {
 		// TODO Auto-generated method stub
+		System.out.println("onCreateResources");
+		
 		FontFactory.setAssetBasePath("font/");
 		final ITexture fontITexture = new BitmapTextureAtlas(
 				this.getTextureManager(), W, H);
@@ -123,9 +139,10 @@ public class MainActivity extends SimpleBaseGameActivity implements
 	@Override
 	protected Scene onCreateScene() {
 		// TODO Auto-generated method stub
+		System.out.println("onCreateScene");
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 		this.mMenuScene = this.createMenuScene();
-
+		this.mStartScene=this.createStartScene();
 		this.mScene = new Scene();
 		this.mScene.setOnSceneTouchListenerBindingOnActionDownEnabled(true);
 
@@ -218,6 +235,7 @@ public class MainActivity extends SimpleBaseGameActivity implements
 						System.out.println(""+a);
 						intent.putExtras(bundle);
 						startActivity(intent);
+						MainActivity.this.finish();
 					}
 				});
 			}
@@ -310,11 +328,38 @@ public class MainActivity extends SimpleBaseGameActivity implements
 		pauseMenuItem.setBlendFunction(GLES20.GL_SRC_ALPHA,
 				GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		menuScene.addMenuItem(pauseMenuItem);
+		
+		final IMenuItem quitMenuItem = new ColorMenuItemDecorator(
+				new TextMenuItem(MENU_QUIT, this.mFont, "QUIT",
+						this.getVertexBufferObjectManager()), Color.PINK,
+				Color.YELLOW);
+		pauseMenuItem.setBlendFunction(GLES20.GL_SRC_ALPHA,
+				GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		menuScene.addMenuItem(quitMenuItem);
 
 		menuScene.buildAnimations();
 		menuScene.setBackgroundEnabled(false);
 		menuScene.setOnMenuItemClickListener(this);
 		return menuScene;
+	}
+	
+	
+	protected MenuScene createStartScene() {
+		final MenuScene startScene = new MenuScene(this.mCamera);
+
+		final IMenuItem startMenuItem = new ColorMenuItemDecorator(
+				new TextMenuItem(MENU_START, this.mFont, "START",
+						this.getVertexBufferObjectManager()), Color.PINK,
+				Color.YELLOW);
+		startMenuItem.setBlendFunction(GLES20.GL_SRC_ALPHA,
+				GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		startScene.addMenuItem(startMenuItem);
+
+		startScene.buildAnimations();
+		startScene.setBackgroundEnabled(false);
+		startScene.setOnMenuItemClickListener(this);
+		return startScene;
+		
 	}
 
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
@@ -326,7 +371,14 @@ public class MainActivity extends SimpleBaseGameActivity implements
 			System.out.println("Unpaused");
 			this.mScene.back();
 			break;
-
+		case MENU_START:
+			timePause+=SystemClock.elapsedRealtime()-startPause;
+			System.out.println("Start");
+			this.mScene.back();
+			break;
+		case MENU_QUIT:
+			MainActivity.this.finish();
+			break;
 		default:
 			break;
 		}

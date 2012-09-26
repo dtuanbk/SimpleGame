@@ -84,15 +84,10 @@ public class YourScoreActivity extends SimpleBaseGameActivity{
 		this.mScene.attachChild(mYourScore);
 		return this.mScene;
 	}
-
-	@Override
-	public boolean isGamePaused() {
-		// TODO Auto-generated method stub
-		
-		return super.isGamePaused();
-	}
+	//Click back
 	@Override
 	public boolean onKeyDown(final int pKeyCode, final KeyEvent pEvent) {
+		
 		if (pKeyCode == KeyEvent.KEYCODE_BACK
 				&& pEvent.getAction() == KeyEvent.ACTION_DOWN) {
 			System.out.println("KEYCODE_BACK");
@@ -104,34 +99,27 @@ public class YourScoreActivity extends SimpleBaseGameActivity{
 		}
 	}
 
-	@Override
-	public synchronized void onPauseGame() {
-		// TODO Auto-generated method stub
-		System.out.println("onPauseGame");
-		finish();
-		super.onPauseGame();
-	}
-	
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		System.out.println("onBackPressed");
-		super.onBackPressed();
-	}
-
-	@Override
-	public boolean onKeyUp( int keyCode, KeyEvent event )
-	{
-		System.out.println("onKeyUp");
-	    if( keyCode == KeyEvent.KEYCODE_BACK )
-	    {
-	    	
-	    	finish();
-	        return true;
-	    }
-	    return super.onKeyUp( keyCode, event );
-	}
-	
+//	@Override
+//	public synchronized void onPauseGame() {
+//		// TODO Auto-generated method stub
+//		System.out.println("onPauseGame");
+//		super.onPauseGame();
+//	}
+//	
+//	//Khi click back
+//	@Override
+//	public boolean onKeyUp( int keyCode, KeyEvent event )
+//	{
+//		System.out.println("onKeyUp");
+//	    if( keyCode == KeyEvent.KEYCODE_BACK )
+//	    {
+//	    	
+//	    	finish();
+//	        return true;
+//	    }
+//	    return super.onKeyUp( keyCode, event );
+//	}
+//	
 	
 	
 	
